@@ -1,0 +1,17 @@
+//This requires you to import the file "LOLRMMexes.csv" into the lookup files. It can't do it dynamically like MDE
+//Big shout out to Andrew-CS on CyberSecurity subreddit. https://www.reddit.com/r/crowdstrike/comments/1g6iupi/20241018_cool_query_friday_hunting_windows_rmm/
+
+// Get all Windows Process Executions
+#event_simpleName=ProcessRollup2 event_platform=Win
+
+// Check to see if FileName matches our list of RMM tools
+| match(file="LOLRMMexes.csv", field=[FileName], column=rmm, ignoreCase=true)
+
+// Create short file path field
+| FilePath=/\\Device\\HarddiskVolume\d+(?<ShortPath>.+$)/
+
+// Aggregate results by FileName
+| groupBy([FileName], function=([count(), count(aid, distinct=true, as=UniqueEndpoints), collect([ShortPath])]))
+
+// Sort in descending order so most prevalent binaries appear first
+| sort(_count, order=desc, limit=5000)
