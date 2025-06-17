@@ -1,0 +1,1 @@
+RemotePort = 3389 | table([ComputerName,LocalAddressIP4, RemoteIP, RemotePort]) | groupBy([ComputerName,LocalAddressIP4, RemoteIP, RemotePort]) | sort(_count)
