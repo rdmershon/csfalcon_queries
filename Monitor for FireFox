@@ -1,0 +1,1 @@
+ParentBaseFileName = firefox.exe OR ImageFileName = firefox.exe | groupBy([ComputerName, UserName]) | sort(_count) | rename(field="_count", as="Number of times program was used")
