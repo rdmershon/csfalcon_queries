@@ -1,0 +1,4 @@
+defineTable(query={#event_simpleName="NetworkConnectIP4" RemotePort = 3389}, include=[ComputerName, RemoteIP, RemotePort], name="networktraffic")
+| #event_simpleName="ProcessRollup2"
+| match(table="networktraffic", field=[ComputerName], column=ComputerName)
+| table([ComputerName,UserName,RemoteIP,RemotePort])
