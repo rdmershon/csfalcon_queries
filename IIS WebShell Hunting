@@ -1,0 +1,13 @@
+// Source https://www.reddit.com/r/crowdstrike/comments/1nf52a3/finding_webshell_activity_for_dummies/
+
+// First the easiest one to do is look for w3wp running unsavory exe/commands. Something like this:
+
+#event_simpleName = ProcessRollup2 and  ParentBaseFileName = w3wp.exe and ImageFileName = /cmd\.exe/i and CommandLine = /dir|powershell|type|tasklist|set|systeminfo|wmic|powershell|appcmd|zip|whoami/i
+| table([UserName, ComputerName, ParentProcessId, CommandLine], limit=max)
+
+// We also had an incident recently were some files were accessed, but from modules loaded in memory, so you don't get clear CommandLine links to this activity.
+// So what can also be helpful is looking at what files w3wp is accessing:
+
+#event_simpleName = FileOpenInfo
+| join({#event_simpleName=ProcessRollup2 and FileName = w3wp.exe}, field=ContextProcessId, key=TargetProcessId, include=[FileName])
+| select([@timestamp, ComputerName, FileName, TargetFileName])
