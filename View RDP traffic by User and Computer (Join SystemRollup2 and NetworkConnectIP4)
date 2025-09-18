@@ -1,4 +1,5 @@
-defineTable(query={#event_simpleName="NetworkConnectIP4" RemotePort = 3389}, include=[ComputerName, RemoteIP, RemotePort], name="networktraffic")
+defineTable(query={#event_simpleName="NetworkConnectIP4" RemotePort = 3389}, include=[ComputerName, SourceIP, RemoteIP, RemotePort], name="networktraffic")
 | #event_simpleName="ProcessRollup2"
 | match(table="networktraffic", field=[ComputerName], column=ComputerName)
-| table([ComputerName,UserName,RemoteIP,RemotePort])
+| groupBy([ComputerName,SourceIP,UserName,RemoteIP,RemotePort])
+| cidr(RemoteIP, subnet=["172.28.0.0/16"])
