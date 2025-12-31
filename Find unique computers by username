@@ -1,0 +1,2 @@
+// Sorted by count of logons observed.
+UserName = "username" AND LogonType = "3" | groupBy(ComputerName) | sort(_count, limit=max)
