@@ -1,0 +1,7 @@
+// Detect file share enumeration using built-in Windows tools
+#event_simpleName=ProcessRollup2 event_platform=Win
+| in(field=FileName, values=["net.exe", "net1.exe", "powershell.exe", "cmd.exe"])
+// Filter for share-related commands in the command line
+| CommandLine=/\b(view|share|use|Get-SmbShare|Get-FileShare|Get-WmiObject.*Win32_Share|net\s+view|net\s+share|net\s+use)\b/i
+| table([@timestamp, ComputerName, UserName, FileName, CommandLine, ParentBaseFileName])
+| sort(@timestamp, order=desc)
