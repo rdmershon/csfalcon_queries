@@ -1,0 +1,8 @@
+//Props to this reddit thread https://www.reddit.com/r/crowdstrike/comments/1twrckp/how_do_i_build_a_ngsiem_search_query_to_find_all/
+
+user.name=*
+| user.name!="*$"
+| CommandLine=*
+| in(field=FileName, values=[powershell.exe, cmd.exe, python.exe])
+| select([@timestamp, user.name, FileName, CommandLine])
+//| groupBy([user.name])
