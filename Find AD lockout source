@@ -19,3 +19,10 @@
     selectFromMax(field=ContextTimeStamp, include=[EventTime])
   ])
 | sort(Count, order=desc)
+
+//This pivots lockouts back to the failed authentication attempts that typically trigger them (bad passwords, expired credentials, etc.), grouped by:
+
+//Who: SourceAccountUserName / SamAccountName
+//Where from: SourceEndpointHostName and SourceEndpointAddressIP4
+//How: ActiveDirectoryAuthenticationMethod (Kerberos/NTLM)
+//Why: AuthenticationFailureMsErrorCode (wrong password, locked out, etc.)
