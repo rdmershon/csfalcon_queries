@@ -1,0 +1,21 @@
+(#event_simpleName=ActiveDirectoryAccountLocked OR #event_simpleName=ActiveDirectoryAuthenticationFailure)
+| ComputerName=/###XXX/i OR SourceEndpointHostName=/###XXX/i OR TargetServerHostName=/###XXX/i
+| $falcon/helper:enrich(field=ActiveDirectoryAuthenticationMethod)
+| $falcon/helper:enrich(field=AuthenticationFailureMsErrorCode)
+| formatTime(format="%Y-%m-%d %H:%M:%S", field=ContextTimeStamp, as=EventTime)
+| groupBy([
+    #event_simpleName,
+    SamAccountName,
+    SourceAccountUserName,
+    AccountDomain,
+    SourceAccountDomain,
+    SourceEndpointHostName,
+    SourceEndpointAddressIP4,
+    ActiveDirectoryAuthenticationMethod,
+    AuthenticationFailureMsErrorCode
+  ],
+  function=[
+    count(as=Count),
+    selectFromMax(field=ContextTimeStamp, include=[EventTime])
+  ])
+| sort(Count, order=desc)
