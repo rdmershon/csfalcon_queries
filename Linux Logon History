@@ -1,0 +1,3 @@
+// Linux logon activity on host cinrqvpn01
+#event_simpleName=UserLogon event_platform=Lin ComputerName=hostname
+| table([@timestamp, ComputerName, UserName, LogonType, RemoteAddressIP4, RemoteAddressIP6])
